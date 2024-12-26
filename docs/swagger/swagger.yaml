@@ -1,0 +1,1501 @@
+basePath: /api/v1
+
+definitions:
+
+  admin.addStudioRequest:
+    properties:
+      name:
+        type: string
+    type: object
+
+  admin.addRoomRequest:
+    properties:
+      name:
+        type: string
+      start_hour:
+        type: integer
+      end_hour:
+        type: integer
+    type: object
+
+  admin.addProducerRequest:
+    properties:
+      name:
+        type: string
+      start_hour:
+        type: integer
+      end_hour:
+        type: integer
+    type: object
+
+  admin.addInstrumentalistRequest:
+    properties:
+      name:
+        type: string
+      start_hour:
+        type: integer
+      end_hour:
+        type: integer
+    type: object
+
+  admin.addEquipmentRequest:
+    properties:
+      studio_id:
+        type: integer
+      name:
+        type: string
+      type_id:
+        type: integer
+    type: object
+
+
+  admin.updateStudioRequest:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+
+  admin.updateRoomRequest:
+    properties:
+      id:
+        type: integer
+      studio_id:
+        type: integer
+      name:
+        type: string
+      start_hour:
+        type: integer
+      end_hour:
+        type: integer
+    type: object
+
+  admin.updateProducerRequest:
+    properties:
+      id:
+        type: integer
+      studio_id:
+        type: integer
+      name:
+        type: string
+      start_hour:
+        type: integer
+      end_hour:
+        type: integer
+    type: object
+
+  admin.updateInstrumentalistRequest:
+    properties:
+      id:
+        type: integer
+      studio_id:
+        type: integer
+      name:
+        type: string
+      start_hour:
+        type: integer
+      end_hour:
+        type: integer
+    type: object
+
+  admin.updateEquipmentRequest:
+    properties:
+      id:
+        type: integer
+      studio_id:
+        type: integer
+      name:
+        type: string
+      type_id:
+        type: integer
+    type: object
+
+
+  http.StatusBadRequest:
+    properties:
+      error:
+        example: Incorrect request body
+        type: string
+    type: object
+    
+  http.StatusInternalServerError:
+    properties:
+      error:
+        example: Failed to process request
+        type: string
+    type: object
+    
+  http.StatusNotFound:
+    properties:
+      error:
+        example: Failed to find resource
+        type: string
+    type: object
+
+  http.notAdmin:
+    properties:
+      error:
+        example: Forbidden
+        type: string
+    type: object
+
+  http.StatusUnauthorized:
+    properties:
+      error:
+        example: Cant login user
+        type: string
+    type: object
+
+  user.loginRequest:
+    properties:
+      login:
+        example: "admin"
+        type: string
+      password:
+        example: "admin"
+        type: string
+    type: object
+
+  user.loginResponse:
+    properties:
+      accessToken:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzI1NzE4NTc2fQ.RdcJHE8TULJKW-mVyn-0OBL_O_kmISrFNuK6E8FeRSs
+        type: string
+
+  http.refreshTokensRequest:
+    properties:
+      accessToken:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzI1NzE4NTc2fQ.RdcJHE8TULJKW-mVyn-0OBL_O_kmISrFNuK6E8FeRSs
+        type: string
+      refreshToken:
+        example: c8edc98acee4d6243add4e59f8fd46d6a7f150831d74f0feb3a10144cbe0c032
+        type: string
+    type: object
+
+
+
+  http.refreshTokensResponse:
+    properties:
+      accessToken:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzI1NzE4NTc2fQ.RdcJHE8TULJKW-mVyn-0OBL_O_kmISrFNuK6E8FeRSs
+        type: string
+      refreshToken:
+        example: c8edc98acee4d6243add4e59f8fd46d6a7f150831d74f0feb3a10144cbe0c032
+        type: string
+    type: object
+
+  user.registerRequest:
+    properties:
+      login:
+        example: nik
+        type: string
+      password:
+        example: "nik"
+        type: string
+      first_name:
+        example: "Иван"
+        type: string
+      second_name:
+        example: Иванов
+        type: string
+      third_name:
+        example: Иванович
+        type: string
+    type: object
+
+  user.registerResponse:
+    properties:
+      accessToken:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzI1NzE4NTc2fQ.RdcJHE8TULJKW-mVyn-0OBL_O_kmISrFNuK6E8FeRSs
+        type: string
+    type: object
+
+
+  reserve.FullInfo:
+    properties:
+      studio:
+        type: string
+      room:
+        type: string
+      producer:
+        type: string
+      instrumentalist:
+        type: string
+      equipments_id:
+        type: array
+        items:
+          type: integer
+      time:
+        type: string
+    type: object
+
+  reserve.Validate:
+    properties:
+      studio_id:
+        type: integer
+      date:
+        type: string
+      start_hour:
+        type: string
+      end_hour:
+        type: string
+    type: object
+
+  reserve.ValidateResponse:
+    properties:
+      rooms:
+        $ref: '#/definitions/room.getResponse'
+      producers:
+        $ref: '#/definitions/producer.getResponse'
+      instrumentalists:
+        $ref: '#/definitions/instrumentalist.getResponse'
+      equipments:
+        $ref: '#/definitions/equipment.getResponse'
+    type: object
+
+  reserve.Make:
+    properties:
+      user_id:
+        type: integer
+      studio_id:
+        type: integer
+      room_id:
+        type: integer
+      producer_id:
+        type: integer
+      instrumentalist_id:
+        type: integer
+      equipments_id:
+        type: array
+        items:
+          type: integer
+      date:
+        type: string
+      start_hour:
+        type: string
+      end_hour:
+        type: string
+
+    type: object
+
+
+  studio.getResponse:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+
+  equipment.getResponse:
+    properties:
+      id:
+        type: string
+      studio_id:
+        type: integer
+      name:
+        type: string
+      typeId:
+        type: string
+
+  instrumentalist.getResponse:
+    properties:
+      id:
+        type: string
+      studio_id:
+        type: integer
+      name:
+        type: string
+      start_hour:
+        type: integer
+      end_hour:
+        type: integer
+
+  producer.getResponse:
+    properties:
+      id:
+        type: string
+      studio_id:
+        type: integer
+      name:
+        type: string
+      start_hour:
+        type: integer
+      end_hour:
+        type: integer
+
+  room.getResponse:
+    properties:
+      id:
+        type: string
+      studio_id:
+        type: integer
+      name:
+        type: string
+      start_hour:
+        type: integer
+      end_hour:
+        type: integer
+
+  studio.getAllResponse:
+    properties:
+      studios:
+        $ref: '#/definitions/studio.getResponse'
+    type: object
+
+  room.getAllResponse:
+    properties:
+      studios:
+        $ref: '#/definitions/room.getResponse'
+    type: object
+
+  producer.getAllResponse:
+    properties:
+      studios:
+        $ref: '#/definitions/producer.getResponse'
+    type: object
+
+  instrumentalist.getAllResponse:
+    properties:
+      studios:
+        $ref: '#/definitions/instrumentalist.getResponse'
+    type: object
+
+  equipment.getAllResponse:
+    properties:
+      studios:
+        $ref: '#/definitions/equipment.getResponse'
+    type: object
+
+
+info:
+  contact: {}
+  title: Бронирование студий
+  version: "1.0"
+
+paths:
+  /signin:
+    post:
+      description: Метод для регистрации пользователя
+      parameters:
+        - description: Регистрация пользователя
+          in: body
+          name: registerRequest
+          required: true
+          schema:
+            $ref: '#/definitions/user.registerRequest'
+      responses:
+        "200":
+          description: Пользователь успешно зарегистрирован
+          schema:
+            $ref: '#/definitions/user.registerResponse'
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "500":
+          description: Внутренняя ошибка регистрации пользователя
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      summary: Регистрация пользователя
+      tags:
+        - auth
+
+  /login:
+    post:
+      description: Метод для входа в аккаунт пользователя
+      parameters:
+        - description: Вход пользователя
+          in: body
+          name: loginRequest
+          required: true
+          schema:
+            $ref: '#/definitions/user.loginRequest'
+      responses:
+        "200":
+          description: Пользователь успешно авторизовался
+          schema:
+            $ref: '#/definitions/user.loginResponse'
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Вход неуспешен
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+      summary: Вход в аккаунт пользователя
+      tags:
+        - auth
+
+  /users/{id}/reserves:
+    get:
+      description: Метод для получения броней пользователя
+      parameters:
+        - description: Идентификатор пользователя
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Список броней успешно получен
+          schema:
+            $ref: '#/definitions/reserve.FullInfo'
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "500":
+          description: Внутренняя ошибка получения броней
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Получение броней пользователя
+      tags:
+        - user
+
+  /validation:
+    get:
+      parameters:
+        - description: Метод для получения доступных атрибутов студии
+          in: body
+          name: validationRequest
+          required: true
+          schema:
+            $ref: '#/definitions/reserve.Validate'
+      responses:
+        "200":
+          description: Список атрибутов студии успешно получен
+          schema:
+            $ref: '#/definitions/reserve.ValidateResponse'
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "500":
+          description: Внутренняя ошибка получения доступных атрибутов студии
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Получение списка доступынх атрибутов студии по времени
+      tags:
+        - user
+  /reserves:
+    post:
+      description: Метод для создания брони
+      parameters:
+        - description: Атрибуты брони
+          in: body
+          name: reserve
+          required: true
+          schema:
+            $ref: '#/definitions/reserve.Make'
+      responses:
+        "200":
+          description: Бронь успешно создана
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "500":
+          description: Внутренняя ошибка создания брони
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Создание брони
+      tags:
+        - user
+  /reserves/{id}:
+    delete:
+      description: Метод для удаления брони
+      parameters:
+        - description: Идентификатор брони
+          in: path
+          name: id
+          required: true
+          type: string
+      produces:
+        - image/jpeg
+        - application/json
+      responses:
+        "200":
+          description: Бронь успешно удалена
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "500":
+          description: Внутренняя ошибка созданя брони
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Удаление брони
+      tags:
+        - user
+
+  /studios/{id}/rooms:
+    get:
+      description: Метод для получения всех комнат по студии
+      parameters:
+        - description: Идентификатор студии
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Комнаты успешно получены
+          schema:
+            $ref: '#/definitions/room.getAllResponse'
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "500":
+          description: Внутренняя ошибка получения комнат
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Получение комнат по студии
+      tags:
+        - room
+
+  /studios/{id}/producers:
+    get:
+      description: Метод для получения всех продюсеров по студии
+      parameters:
+        - description: Идентификатор студии
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Продюсеры успешно получены
+          schema:
+            $ref: '#/definitions/producer.getAllResponse'
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "500":
+          description: Внутренняя ошибка получения продюсеров
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Получение продюсеров по студии
+      tags:
+        - producer
+
+  /studios/{id}/instrumentalists:
+    get:
+      description: Метод для получения всех инструменталистов по студии
+      parameters:
+        - description: Идентификатор студии
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Инструменталисты успешно получены
+          schema:
+            $ref: '#/definitions/room.getAllResponse'
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "500":
+          description: Внутренняя ошибка получения инструменталистов
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Получение инструменталистов по студии
+      tags:
+        - instrumentalist
+
+  /studios/{id}/equipments:
+    get:
+      description: Метод для получения всего оборудования по студии
+      parameters:
+        - description: Идентификатор студии
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Инструменталисты успешно получены
+          schema:
+            $ref: '#/definitions/room.getAllResponse'
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "500":
+          description: Внутренняя ошибка получения инструменталистов
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Получение инструменталистов по студии
+      tags:
+        - equipment
+
+
+  /studios/{id}:
+    get:
+      description: Метод для получения студии
+      parameters:
+        - description: Идентификатор студии
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Студия успешно получена
+          schema:
+            $ref: '#/definitions/studio.getResponse'
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "500":
+          description: Внутренняя ошибка получения студии
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Получение студии
+      tags:
+        - studio
+    patch:
+      description: Метод для изменения студий
+      parameters:
+        - description: Идентификатор студии
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: Атрибуты студии
+          in: body
+          name: updateStudioRequest
+          required: true
+          schema:
+            $ref: '#/definitions/admin.updateStudioRequest'
+      responses:
+        "200":
+          description: Студия успешно изменена
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "404":
+          description: Карточка не найдена
+          schema:
+            $ref: '#/definitions/http.StatusNotFound'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/http.notAdmin'
+        "500":
+          description: Внутренняя ошибка изменения студии
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: [ ]
+      summary: Изменение студии
+      tags:
+        - studio
+
+    delete:
+      description: Метод для удаления студии
+      parameters:
+        - description: Идентификатор студии
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Студия успешно удалена
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/http.notAdmin'
+
+        "404":
+          description: Карточка не найдена
+          schema:
+            $ref: '#/definitions/http.StatusNotFound'
+        "500":
+          description: Внутренняя ошибка удаления студии
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Удаление студии
+      tags:
+        - studio
+
+
+  /rooms/{id}:
+    get:
+      description: Метод для получения комнаты
+      parameters:
+        - description: Идентификатор комнаты
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Комната успешно получена
+          schema:
+            $ref: '#/definitions/room.getResponse'
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "500":
+          description: Внутренняя ошибка получения комнаты
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Получение комнаты
+      tags:
+        - room
+
+    delete:
+      description: Метод для удаления комнаты
+      parameters:
+        - description: Идентификатор комнаты
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Комната успешно удалена
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/http.notAdmin'
+        "404":
+          description: Карточка не найдена
+          schema:
+            $ref: '#/definitions/http.StatusNotFound'
+        "500":
+          description: Внутренняя ошибка удаления комнаты
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Удаление комнаты
+      tags:
+        - room
+
+    patch:
+      description: Метод для изменения комнаты
+      parameters:
+        - description: Идентификатор комнаты
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: Атрибуты комнаты
+          in: body
+          name: updateRoomRequest
+          required: true
+          schema:
+            $ref: '#/definitions/admin.updateRoomRequest'
+      responses:
+        "200":
+          description: Комната успешно изменена
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/http.notAdmin'
+
+        "404":
+          description: Карточка не найдена
+          schema:
+            $ref: '#/definitions/http.StatusNotFound'
+        "500":
+          description: Внутренняя ошибка изменения комнаты
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Изменение комнаты
+      tags:
+        - room
+
+  /producers/{id}:
+    get:
+      description: Метод для получения продюсера
+      parameters:
+        - description: Идентификатор продюсера
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Продюсер успешно получен
+          schema:
+            $ref: '#/definitions/producer.getResponse'
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "500":
+          description: Внутренняя ошибка получения продюсера
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Получение продюсер
+      tags:
+        - producer
+
+    delete:
+      description: Метод для изменения продюсера
+      parameters:
+        - description: Идентификатор продюсера
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Продюсер успешно удален
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/http.notAdmin'
+
+        "404":
+          description: Карточка не найдена
+          schema:
+            $ref: '#/definitions/http.StatusNotFound'
+        "500":
+          description: Внутренняя ошибка удаления продюсера
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Удаление продюсера
+      tags:
+        - producer
+
+
+    patch:
+      description: Метод для изменения продюсера
+      parameters:
+        - description: Идентификатор прдюсера
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: Атрибуты продюсера
+          in: body
+          name: updateProducerRequest
+          required: true
+          schema:
+            $ref: '#/definitions/admin.updateProducerRequest'
+      responses:
+        "200":
+          description: Продюсер успешно изменен
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/http.notAdmin'
+
+        "404":
+          description: Карточка не найдена
+          schema:
+            $ref: '#/definitions/http.StatusNotFound'
+        "500":
+          description: Внутренняя ошибка изменения продюсера
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Изменение продюсера
+      tags:
+        - producer
+
+
+  /equipments/{id}:
+    get:
+      description: Метод для получения оборудования
+      parameters:
+        - description: Идентификатор оборудования
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Оборудование успешно получено
+          schema:
+            $ref: '#/definitions/producer.getResponse'
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "500":
+          description: Внутренняя ошибка получения оборудования
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Получение оборудования
+      tags:
+        - equipment
+
+    delete:
+      description: Метод для удаления оборудования
+      parameters:
+        - description: Идентификатор оборудования
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Оборудование успешно удалено
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/http.notAdmin'
+
+        "404":
+          description: Карточка не найдена
+          schema:
+            $ref: '#/definitions/http.StatusNotFound'
+        "500":
+          description: Внутренняя ошибка удаления оборудования
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Удаления оборудования
+      tags:
+        - equipment
+    patch:
+      description: Метод для изменения оборудования
+      parameters:
+        - description: Идентификатор оборудования
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: Атрибуты оборудования
+          in: body
+          name: updateEquipmentRequest
+          required: true
+          schema:
+            $ref: '#/definitions/admin.updateEquipmentRequest'
+      responses:
+        "200":
+          description: Оборудование успешно изменено
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/http.notAdmin'
+
+        "404":
+          description: Карточка не найдена
+          schema:
+            $ref: '#/definitions/http.StatusNotFound'
+        "500":
+          description: Внутренняя ошибка изменения оборудования
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Изменение оборудования
+      tags:
+        - equipment
+
+
+
+  /instrumentalists/{id}:
+    get:
+      description: Метод для получения инструменталиста
+      parameters:
+        - description: Идентификатор инструменталиста
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Инструменталист успешно получен
+          schema:
+            $ref: '#/definitions/producer.getResponse'
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "500":
+          description: Внутренняя ошибка получения инструменталиста
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Получение инструменталиста
+      tags:
+        - instrumentalist
+
+    delete:
+      description: Метод для удаления инструменталиста
+      parameters:
+        - description: Идентификатор инструменталиста
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Инструменталист успешно удален
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/http.notAdmin'
+
+        "404":
+          description: Карточка не найдена
+          schema:
+            $ref: '#/definitions/http.StatusNotFound'
+        "500":
+          description: Внутренняя ошибка удаления инструменталиста
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Удаление инструменталиста
+      tags:
+        - instrumentalist
+
+    patch:
+      description: Метод для изменения инструменталиста
+      parameters:
+        - description: Идентификатор инструменталиста
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: Атрибуты инструменталиста
+          in: body
+          name: updateInstrumentalistRequest
+          required: true
+          schema:
+            $ref: '#/definitions/admin.updateInstrumentalistRequest'
+      responses:
+        "200":
+          description: Инструменталист успешно изменен
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/http.notAdmin'
+
+        "404":
+          description: Карточка не найдена
+          schema:
+            $ref: '#/definitions/http.StatusNotFound'
+        "500":
+          description: Внутренняя ошибка изменения инструменталиста
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Изменение инструменталиста
+      tags:
+        - instrumentalist
+
+
+  /studios:
+    post:
+      description: Метод для добавления студии
+      parameters:
+        - description: Атрибуты студии
+          in: body
+          name: addStudioRequest
+          required: true
+          schema:
+            $ref: '#/definitions/admin.addStudioRequest'
+      responses:
+        "200":
+          description: Комната успешно добавлена
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/http.notAdmin'
+
+        "404":
+          description: Карточка не найдена
+          schema:
+            $ref: '#/definitions/http.StatusNotFound'
+        "500":
+          description: Внутренняя ошибка добавления студии
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Добавление студии
+      tags:
+        - studio
+
+  /rooms:
+    post:
+      description: Метод для добавления комнат
+      parameters:
+        - description: Атрибуты комнаты
+          in: body
+          name: addRoomRequest
+          required: true
+          schema:
+            $ref: '#/definitions/admin.addRoomRequest'
+      responses:
+        "200":
+          description: Комната успешно добавлена
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/http.notAdmin'
+
+        "404":
+          description: Карточка не найдена
+          schema:
+            $ref: '#/definitions/http.StatusNotFound'
+        "500":
+          description: Внутренняя ошибка добавления комнаты
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Добавление комнаты
+      tags:
+        - room
+
+  /producers:
+    post:
+      description: Метод для добавления продюсера
+      parameters:
+        - description: Атрибуты продюсера
+          in: body
+          name: addProducerRequest
+          required: true
+          schema:
+            $ref: '#/definitions/admin.addProducerRequest'
+      responses:
+        "200":
+          description: Продюсер успешно добавлен
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/http.notAdmin'
+
+        "404":
+          description: Карточка не найдена
+          schema:
+            $ref: '#/definitions/http.StatusNotFound'
+        "500":
+          description: Внутренняя ошибка добавления продюсера
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Добавление продюсера
+      tags:
+        - producer
+
+  /instrumentalists:
+    post:
+      description: Метод для добавления инструменталиста
+      parameters:
+        - description: Атрибуты инструменталиста
+          in: body
+          name: addInstrumentalistRequest
+          required: true
+          schema:
+            $ref: '#/definitions/admin.addInstrumentalistRequest'
+      responses:
+        "200":
+          description: Инструменталист успешно добавлен
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/http.notAdmin'
+
+        "404":
+          description: Карточка не найдена
+          schema:
+            $ref: '#/definitions/http.StatusNotFound'
+        "500":
+          description: Внутренняя ошибка добавления инструменталиста
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Добавление инструменталиста
+      tags:
+        - instrumentalist
+
+
+  /equipments:
+    post:
+      description: Метод для добавления оборудования
+      parameters:
+        - description: Атрибуты оборудования
+          in: body
+          name: addEquipmentRequest
+          required: true
+          schema:
+            $ref: '#/definitions/admin.addEquipmentRequest'
+      responses:
+        "200":
+          description: Оборудование успешно добавлено
+          schema:
+            type: string
+        "400":
+          description: Некорректное тело запроса
+          schema:
+            $ref: '#/definitions/http.StatusBadRequest'
+        "401":
+          description: Авторизация неуспешна
+          schema:
+            $ref: '#/definitions/http.StatusUnauthorized'
+        "403":
+          description: Доступ запрещен
+          schema:
+            $ref: '#/definitions/http.notAdmin'
+
+        "404":
+          description: Карточка не найдена
+          schema:
+            $ref: '#/definitions/http.StatusNotFound'
+        "500":
+          description: Внутренняя ошибка добавления оборудования
+          schema:
+            $ref: '#/definitions/http.StatusInternalServerError'
+      security:
+        - BearerAuth: []
+      summary: Добавление оборудования
+      tags:
+        - equipment
+
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
+schemes:
+  - http
+host: 'localhost'

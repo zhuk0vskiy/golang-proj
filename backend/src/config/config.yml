@@ -1,0 +1,18 @@
+JwtKey: '324mIOjkm34k677NkfsJf'
+
+http:
+  port: 8081
+
+database:
+  postgres:
+#    host: '172.28.2.2'
+    host: 'localhost'
+    port: 5439
+    user: 'studios'
+    password: 'studios'
+    database: 'studios'
+    driver: 'postgres'
+
+logger:
+  level: 'error'
+  file: 'out.log'

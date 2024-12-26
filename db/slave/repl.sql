@@ -1,0 +1,1 @@
+CREATE PUBLICATION my_publication FOR TABLE "user", studio, Room, equipment, producer, instrumentalist, reserve, reserved_equipments;
