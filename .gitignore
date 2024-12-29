@@ -46,12 +46,13 @@ go.work.sum
 *.so
 *.dylib
 
-
+__pycache__
 
 # Test binary, built with `go test -c`
 *.test
 allure-reports
 allure-results
+results
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out

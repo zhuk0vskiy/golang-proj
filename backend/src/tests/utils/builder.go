@@ -290,3 +290,7 @@ func (u *EquipmentBuilder) ToDto() *model.Equipment {
 		StudioId:      u.StudioId,
 	}
 }
+
+type TimeParserBuilder struct {
+	
+}

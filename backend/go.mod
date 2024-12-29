@@ -1,7 +1,3 @@
-//module backend
-//
-//go 1.22.4
-
 module backend
 
 go 1.22.0

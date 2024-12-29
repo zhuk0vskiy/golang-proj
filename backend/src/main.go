@@ -2,10 +2,10 @@ package main
 
 import (
 	"backend/src/config"
+	"backend/src/handlers"
+	"backend/src/handlers/v1"
 	"backend/src/internal/app"
 	"backend/src/pkg/logger"
-	"backend/src/web"
-	"backend/src/web/v1"
 	"context"
 	"fmt"
 	"github.com/go-chi/chi/v5"
@@ -78,7 +78,7 @@ func main() {
 			r.Group(func(r chi.Router) {
 				r.Use(jwtauth.Verifier(tokenAuth))
 				r.Use(jwtauth.Authenticator(tokenAuth))
-				r.Use(web.ValidateUserRoleJWT)
+				r.Use(handlers.ValidateUserRoleJWT)
 
 				r.Get("/validation", v1.ValidationHandler(a))
 			})
@@ -97,7 +97,7 @@ func main() {
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(web.ValidateUserRoleJWT)
+					r.Use(handlers.ValidateUserRoleJWT)
 
 					r.Get("/{id}", v1.GetStudioHandler(a))
 					r.Get("/{id}/rooms", v1.GetRoomsByStudioHandler(a))
@@ -109,7 +109,7 @@ func main() {
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(web.ValidateAdminRoleJWT)
+					r.Use(handlers.ValidateAdminRoleJWT)
 
 					r.Patch("/{id}", v1.UpdateStudioHandler(a))
 					r.Delete("/{id}", v1.DeleteStudioHandler(a))
@@ -122,7 +122,7 @@ func main() {
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(web.ValidateUserRoleJWT)
+					r.Use(handlers.ValidateUserRoleJWT)
 
 					r.Get("/{id}", v1.GetRoomHandler(a))
 				})
@@ -130,7 +130,7 @@ func main() {
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(web.ValidateAdminRoleJWT)
+					r.Use(handlers.ValidateAdminRoleJWT)
 
 					r.Post("/", v1.AddRoomHandler(a))
 					r.Patch("/{id}", v1.UpdateRoomHandler(a))
@@ -142,7 +142,7 @@ func main() {
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(web.ValidateUserRoleJWT)
+					r.Use(handlers.ValidateUserRoleJWT)
 
 					r.Get("/{id}", v1.GetProducerHandler(a))
 				})
@@ -150,7 +150,7 @@ func main() {
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(web.ValidateAdminRoleJWT)
+					r.Use(handlers.ValidateAdminRoleJWT)
 
 					r.Post("/", v1.AddProducerHandler(a))
 					r.Patch("/{id}", v1.UpdateProducerHandler(a))
@@ -162,14 +162,14 @@ func main() {
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(web.ValidateUserRoleJWT)
+					r.Use(handlers.ValidateUserRoleJWT)
 
 					r.Get("/{id}", v1.GetInstrumentalistHandler(a))
 				})
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(web.ValidateAdminRoleJWT)
+					r.Use(handlers.ValidateAdminRoleJWT)
 
 					r.Post("/", v1.AddInstrumentalistHandler(a))
 					r.Patch("/{id}", v1.UpdateInstrumentalistHandler(a))
@@ -181,14 +181,14 @@ func main() {
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(web.ValidateUserRoleJWT)
+					r.Use(handlers.ValidateUserRoleJWT)
 
 					r.Get("/{id}", v1.GetEquipmentHandler(a))
 				})
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(web.ValidateAdminRoleJWT)
+					r.Use(handlers.ValidateAdminRoleJWT)
 
 					r.Post("/", v1.AddEquipmentHandler(a))
 					r.Patch("/{id}", v1.UpdateEquipmentHandler(a))
