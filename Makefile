@@ -1,5 +1,5 @@
 up-backend:
-	docker compose up backend backend-ro-1 backend-ro-2 backend-mirror postgres-master postgres-slave-ro -d
+	docker compose up backend backend-ro-1 backend-ro-2 backend-mirror postgres-master postgres-slave-ro prometheus -d
 
 up-db:
 	docker compose up postgres-master postgres-slave-ro -d

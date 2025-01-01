@@ -77,6 +77,13 @@ create table if not exists reserved_equipments
     equipment_id int references equipment(id) on delete cascade not null
 );
 
+create table if not exists photo 
+(
+    id serial primary key not null ,
+    user_id int references "user"(id) on delete cascade not null ,
+    key text not null
+);
+
 -- insert into "user"(login, password, role, first_name, second_name, third_name) values ('admin', 'admin', 'admin', 'admin','admin', 'admin')
 
 

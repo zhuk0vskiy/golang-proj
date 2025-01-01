@@ -2,8 +2,8 @@ package main
 
 import (
 	"backend/src/config"
-	"backend/src/handlers"
-	"backend/src/handlers/v1"
+	"backend/src/internal/controller"
+	"backend/src/internal/controller/v1"
 	"backend/src/internal/app"
 	"backend/src/pkg/logger"
 	"context"
@@ -15,7 +15,9 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"log"
 	"net/http"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"os"
+	"backend/src/pkg/mongodb"
 )
 
 func main() {
@@ -25,6 +27,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// fmt.Printf(c.JwtKey)
 	// Create logger
 	fmt.Println("trying to create logger")
 	loggerFile, err := os.OpenFile(
@@ -47,16 +50,30 @@ func main() {
 	tokenAuth := jwtauth.New("HS256", []byte(c.JwtKey), nil)
 	fmt.Println(c.JwtKey)
 
-	fmt.Printf("trying to connect db %s with user %s\n", c.Database.Postgres.Database, c.Database.Postgres.User)
+	fmt.Printf("trying to connect db %s with user %s . port: %s\n", 
+		c.Database.Postgres.Database, 
+		c.Database.Postgres.User,
+		fmt.Sprintf("%s:%d", c.Database.Postgres.Host, c.Database.Postgres.Port),
+	)
 	db, err := newConn(ctx, &c.Database)
 	if err != nil {
 		l.Fatalf("failed to connect to database: %v", err)
 	}
 
-	fmt.Println("trying to new app")
-	a := app.NewApp(db, c, l)
+	fmt.Printf("trying to connect db %s", c.Database.MongoDB.URI)
+	mdb, err := mongodb.New(
+		c.Database.MongoDB.URI,
+		c.Database.MongoDB.Database,
+		c.Database.MongoDB.Bucket,
+	)
+	if err != nil {
+		l.Fatalf("failed to connect to database: %v", err)
+	}
 
-	fmt.Println("trying to make handlers")
+	fmt.Println("trying to new app")
+	a := app.NewApp(db, mdb, c, l)
+
+	fmt.Println("trying to make controller")
 	mux := chi.NewMux()
 	mux.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"https://*", "http://*"},
@@ -73,14 +90,27 @@ func main() {
 		r.Route("/v1", func(r chi.Router) {
 			r.Post("/login", v1.LoginHandler(a))
 			r.Post("/signin", v1.SignInHandler(a))
-			r.Get("/test/studios/{id}", v1.GetStudioHandler(a))
 
+
+
+			
 			r.Group(func(r chi.Router) {
 				r.Use(jwtauth.Verifier(tokenAuth))
 				r.Use(jwtauth.Authenticator(tokenAuth))
-				r.Use(handlers.ValidateUserRoleJWT)
+				r.Use(controller.ValidateUserRoleJWT)
 
 				r.Get("/validation", v1.ValidationHandler(a))
+			})
+
+			r.Route("/test", func(r chi.Router) {
+				r.Group(func(r chi.Router) {
+					r.Use(jwtauth.Verifier(tokenAuth))
+					r.Use(jwtauth.Authenticator(tokenAuth))
+					r.Get("/studios/{id}", v1.GetStudioHandler(a))
+					r.Post("/photo", v1.AddPhotoHandler(a))
+					r.Get("/photo", v1.GetPhotoHandler(a))
+					r.Delete("/photo", v1.DeletePhotoHandler(a))
+				})
 			})
 
 			r.Route("/reserves", func(r chi.Router) {
@@ -97,7 +127,7 @@ func main() {
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(handlers.ValidateUserRoleJWT)
+					r.Use(controller.ValidateUserRoleJWT)
 
 					r.Get("/{id}", v1.GetStudioHandler(a))
 					r.Get("/{id}/rooms", v1.GetRoomsByStudioHandler(a))
@@ -109,7 +139,7 @@ func main() {
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(handlers.ValidateAdminRoleJWT)
+					r.Use(controller.ValidateAdminRoleJWT)
 
 					r.Patch("/{id}", v1.UpdateStudioHandler(a))
 					r.Delete("/{id}", v1.DeleteStudioHandler(a))
@@ -122,7 +152,7 @@ func main() {
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(handlers.ValidateUserRoleJWT)
+					r.Use(controller.ValidateUserRoleJWT)
 
 					r.Get("/{id}", v1.GetRoomHandler(a))
 				})
@@ -130,7 +160,7 @@ func main() {
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(handlers.ValidateAdminRoleJWT)
+					r.Use(controller.ValidateAdminRoleJWT)
 
 					r.Post("/", v1.AddRoomHandler(a))
 					r.Patch("/{id}", v1.UpdateRoomHandler(a))
@@ -142,7 +172,7 @@ func main() {
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(handlers.ValidateUserRoleJWT)
+					r.Use(controller.ValidateUserRoleJWT)
 
 					r.Get("/{id}", v1.GetProducerHandler(a))
 				})
@@ -150,7 +180,7 @@ func main() {
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(handlers.ValidateAdminRoleJWT)
+					r.Use(controller.ValidateAdminRoleJWT)
 
 					r.Post("/", v1.AddProducerHandler(a))
 					r.Patch("/{id}", v1.UpdateProducerHandler(a))
@@ -162,14 +192,14 @@ func main() {
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(handlers.ValidateUserRoleJWT)
+					r.Use(controller.ValidateUserRoleJWT)
 
 					r.Get("/{id}", v1.GetInstrumentalistHandler(a))
 				})
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(handlers.ValidateAdminRoleJWT)
+					r.Use(controller.ValidateAdminRoleJWT)
 
 					r.Post("/", v1.AddInstrumentalistHandler(a))
 					r.Patch("/{id}", v1.UpdateInstrumentalistHandler(a))
@@ -181,14 +211,14 @@ func main() {
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(handlers.ValidateUserRoleJWT)
+					r.Use(controller.ValidateUserRoleJWT)
 
 					r.Get("/{id}", v1.GetEquipmentHandler(a))
 				})
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
-					r.Use(handlers.ValidateAdminRoleJWT)
+					r.Use(controller.ValidateAdminRoleJWT)
 
 					r.Post("/", v1.AddEquipmentHandler(a))
 					r.Patch("/{id}", v1.UpdateEquipmentHandler(a))
@@ -196,14 +226,27 @@ func main() {
 				})
 			})
 
-			r.Route("/users", func(r chi.Router) {
+			r.Route("/user", func(r chi.Router) {
 				r.Group(func(r chi.Router) {
-					r.Get("/{id}/reserves", v1.GetUserReservesHandler(a))
+					r.Use(jwtauth.Verifier(tokenAuth))
+					r.Use(jwtauth.Authenticator(tokenAuth))
+					r.Use(controller.ValidateAdminRoleJWT)
+					r.Get("/reserves", v1.GetUserReservesHandler(a))
 				})
 			})
 
 		})
 	})
+
+	go func() {
+		metricsAddress := fmt.Sprintf("%s:%d", c.Prometheus.MetricHost, c.Prometheus.MetricPort)
+
+		metricsMux := http.NewServeMux()
+		metricsMux.Handle("/metrics", promhttp.Handler())
+
+		fmt.Printf("сервер метрик прослушивает адрес: %s\n", metricsAddress)
+		http.ListenAndServe(metricsAddress, metricsMux)
+	}()
 
 	serverPort := fmt.Sprintf(":%s", c.HTTP.Port)
 	fmt.Printf("server has started at port %s\n", serverPort)

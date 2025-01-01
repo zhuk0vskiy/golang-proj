@@ -23,8 +23,9 @@ func (p *PhotoKey) String() string {
 }
 
 type PhotoMeta struct {
-	ID         *PhotoID
-	PhotoKey   *PhotoKey
+	Id         int64
+	UserId int64
+	PhotoKey   string
 }
 
 type Photo struct {

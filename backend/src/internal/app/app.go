@@ -2,11 +2,15 @@ package app
 
 import (
 	"backend/src/config"
+	moDb "backend/src/internal/repository/impl/mongodb"
 	"backend/src/internal/repository/impl/postgresql"
+	repoInterface "backend/src/internal/repository/interface"
 	serviceImpl "backend/src/internal/service/impl"
 	serviceInterface "backend/src/internal/service/interface"
 	"backend/src/pkg/base"
 	"backend/src/pkg/logger"
+	"backend/src/pkg/mongodb"
+
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -20,10 +24,11 @@ type App struct {
 	EquipmentSvc       serviceInterface.IEquipmentService
 	ReserveSvc         serviceInterface.IReserveService
 	ValidateTimeSvc    serviceInterface.IValidateTimeService
+	PhotoSvc           serviceInterface.PhotoService
 	Config             config.Config
 }
 
-func NewApp(db *pgxpool.Pool, cfg *config.Config, logger logger.Interface) *App {
+func NewApp(db *pgxpool.Pool, mdb *mongodb.MongoDB, cfg *config.Config, logger logger.Interface) *App {
 	//authRepo := postgresql.NewA
 	userRepo := postgresql.NewUserRepository(db)
 	studioRepo := postgresql.NewStudioRepository(db)
@@ -32,6 +37,9 @@ func NewApp(db *pgxpool.Pool, cfg *config.Config, logger logger.Interface) *App 
 	instrumentalistRepo := postgresql.NewInstrumentalistRepository(db)
 	equipmentRepo := postgresql.NewEquipmentRepository(db)
 	reserveRepo := postgresql.NewReserveRepository(db)
+
+	photoMetaRepo := postgresql.NewPhotoMetaStorage(db)
+	photoDataRepo := moDb.NewPhotoDataStorage(mdb)
 
 	crypto := base.NewHashCrypto()
 
@@ -45,6 +53,11 @@ func NewApp(db *pgxpool.Pool, cfg *config.Config, logger logger.Interface) *App 
 	reserveSvc := serviceImpl.NewReserveService(logger, reserveRepo, roomRepo, producerRepo, instrumentalistRepo)
 	validateTimeSvc := serviceImpl.NewValidateTimeService(logger, roomRepo, equipmentRepo, producerRepo, instrumentalistRepo, reserveRepo)
 
+	photoSvc := serviceImpl.NewPhotoService(logger, repoInterface.PhotoStorage{
+		IPhotoDataStorage: photoDataRepo,
+		IPhotoMetaStorage: photoMetaRepo,
+	})
+
 	return &App{
 		AuthSvc:            authSvc,
 		UserSvc:            userSvc,
@@ -56,5 +69,6 @@ func NewApp(db *pgxpool.Pool, cfg *config.Config, logger logger.Interface) *App 
 		ReserveSvc:         reserveSvc,
 		ValidateTimeSvc:    validateTimeSvc,
 		Config:             *cfg,
+		PhotoSvc:           photoSvc,
 	}
 }

@@ -1,18 +1,25 @@
 package config
 
 import (
-	"github.com/spf13/viper"
 	"os"
 	"strconv"
+
+	"github.com/spf13/viper"
 )
 
 const configPath = "config/config.yml"
 
 type Config struct {
-	Logger   LoggerConfig   `yaml:"logger"`
-	HTTP     HTTPConfig     `yaml:"http"`
-	Database DatabaseConfig `yaml:"database"`
-	JwtKey   string         `yaml:"JwtKey"`
+	Logger     LoggerConfig     `yaml:"logger"`
+	HTTP       HTTPConfig       `yaml:"http"`
+	Database   DatabaseConfig   `yaml:"database"`
+	JwtKey     string           `yaml:"JwtKey"`
+	Prometheus PrometheusConfig `yaml:"prometheus"`
+}
+
+type PrometheusConfig struct {
+	MetricHost string `yaml:"metricHost"`
+	MetricPort int `yaml:"metricPort"`
 }
 
 type LoggerConfig struct {
@@ -26,6 +33,7 @@ type HTTPConfig struct {
 
 type DatabaseConfig struct {
 	Postgres PostgresConfig
+	MongoDB  MongoDBConfig
 }
 
 type PostgresConfig struct {
@@ -35,6 +43,12 @@ type PostgresConfig struct {
 	Password string `yaml:"password"`
 	Database string `yaml:"database"`
 	Driver   string `yaml:"driver"`
+}
+
+type MongoDBConfig struct {
+	URI      string `yaml:"uri"`
+	Database string `yaml:"database"`
+	Bucket   string `yaml:"bucket"`
 }
 
 func NewConfig() (*Config, error) {

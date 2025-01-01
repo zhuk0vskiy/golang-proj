@@ -428,7 +428,7 @@ paths:
       tags:
         - auth
 
-  /users/{id}/reserves:
+  /user/reserves:
     get:
       description: Метод для получения броней пользователя
       parameters:
@@ -1498,4 +1498,4 @@ securityDefinitions:
 swagger: "2.0"
 schemes:
   - http
-host: 'localhost'
+host: 'localhost:8081'

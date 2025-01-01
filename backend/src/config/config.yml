@@ -1,5 +1,9 @@
 JwtKey: '324mIOjkm34k677NkfsJf'
 
+prometheus:
+  metricHost: 'localhost'
+  metricPort: 8099
+
 http:
   port: 8081
 
@@ -7,11 +11,15 @@ database:
   postgres:
 #    host: '172.28.2.2'
     host: 'localhost'
-    port: 5439
+    port: 5438
     user: 'studios'
     password: 'studios'
     database: 'studios'
     driver: 'postgres'
+  mongodb:
+    uri: 'mongodb://localhost:30001'
+    database: 'course'
+    bucket: 'photos'
 
 logger:
   level: 'error'

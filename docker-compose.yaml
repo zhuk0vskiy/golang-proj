@@ -208,6 +208,74 @@ services:
       proj-network:
         ipv4_address: 172.28.5.2
 
+
+  allure:
+    container_name: allure
+    image: "frankescobar/allure-docker-service"
+    environment:
+      CHECK_RESULTS_EVERY_SECONDS: 1
+      KEEP_HISTORY: 1
+    restart: no
+    ports:
+      - "5050:5050"
+    volumes:
+      - ./backend/src/tests/unit/allure-results:/app/projects/1/results
+    networks:
+      proj-network:
+        ipv4_address: 172.28.6.1
+
+  allure-ui:
+    container_name: allure-ui
+    image: "frankescobar/allure-docker-service-ui"
+    environment:
+      ALLURE_DOCKER_PUBLIC_API_URL: "http://localhost:5050"
+      ALLURE_DOCKER_PUBLIC_API_URL_PREFIX: ""
+    restart: no
+    # depends-on:
+    #   allure:
+    #     condition: service_started
+    ports:
+      - "5252:5252"
+    networks:
+      proj-network:
+        ipv4_address: 172.28.6.2
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    ports:
+      - "19090:9090"
+    volumes:
+      - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml
+    networks:
+      proj-network:
+        ipv4_address: 172.28.7.1    
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3030:3000"
+    volumes:
+      - ./grafana/data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      proj-network:
+        ipv4_address: 172.28.7.2
+
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    ports:
+      - 30001:27017
+    environment:
+      MONGO_INITDB_DATABASE: course
+    networks:
+      proj-network:
+        ipv4_address: 172.28.8.1
+
+
   nginx:
     container_name: nginx
     image: nginx:1.27
@@ -234,32 +302,6 @@ services:
     networks:
       proj-network:
         ipv4_address: 172.28.22.1
-
-  allure:
-    container_name: allure
-    image: "frankescobar/allure-docker-service"
-    environment:
-      CHECK_RESULTS_EVERY_SECONDS: 1
-      KEEP_HISTORY: 1
-    restart: no
-    ports:
-      - "5050:5050"
-    volumes:
-      - ./backend/src/tests/unit/allure-results:/app/projects/1/results
-
-  allure-ui:
-    container_name: allure-ui
-    image: "frankescobar/allure-docker-service-ui"
-    environment:
-      ALLURE_DOCKER_PUBLIC_API_URL: "http://localhost:5050"
-      ALLURE_DOCKER_PUBLIC_API_URL_PREFIX: ""
-    restart: no
-    # depends-on:
-    #   allure:
-    #     condition: service_started
-    ports:
-      - "5252:5252"
-    
 
 networks:
   proj-network:
